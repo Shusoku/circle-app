@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wearable display and gestures</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0F14}
+a{color:#9AA6B2}a:hover{color:#E8EDF2}
+</style>
+</helmet>
+<div style="width: 560px; height: 844px; box-sizing: border-box; background: #0B0F14; color: #E8EDF2; font-family: 'Inter', system-ui, sans-serif; padding: 32px; display: flex; flex-direction: column; gap: 22px">
+
+<div>
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700">On the wearable</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 6px">Flat screen digital compass for the necklace, bracelet or ring face.</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<figure style="margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px; border-radius: 18px; background: #121821; border: 1px solid #1E2732">
+<svg width="180" height="180" viewBox="0 0 200 200" role="img" aria-label="Device face, friend far away, small ping">
+<circle cx="100" cy="100" r="96" fill="#05080B" stroke="#263140" stroke-width="3"></circle>
+<circle cx="100" cy="100" r="22" fill="none" stroke="#7FB2FF" stroke-width="2" opacity="0.8"></circle>
+<polygon points="100,34 118,100 100,166 82,100" fill="none" stroke="#263140" stroke-width="1.5"></polygon>
+<polygon points="100,40 112,100 100,92 88,100" fill="#F5B544" transform="rotate(-110 100 100)"></polygon>
+<text x="100" y="22" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#F5B544">N</text>
+<text x="100" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#9AA6B2">3+ mi</text>
+</svg>
+<figcaption style="font-size: 13px; text-align: center"><strong>Far away</strong><br><span style="color: #9AA6B2">Diamond points the way, ping stays small</span></figcaption>
+</figure>
+<figure style="margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px; border-radius: 18px; background: #121821; border: 1px solid #1E2732">
+<svg width="180" height="180" viewBox="0 0 200 200" role="img" aria-label="Device face, friend close by, large ping">
+<circle cx="100" cy="100" r="96" fill="#05080B" stroke="#263140" stroke-width="3"></circle>
+<circle cx="100" cy="100" r="84" fill="none" stroke="#7FB2FF" stroke-width="3" opacity="0.9"></circle>
+<circle cx="100" cy="100" r="64" fill="none" stroke="#7FB2FF" stroke-width="1.5" opacity="0.5"></circle>
+<polygon points="100,34 118,100 100,166 82,100" fill="none" stroke="#263140" stroke-width="1.5"></polygon>
+<polygon points="100,40 112,100 100,92 88,100" fill="#F5B544" transform="rotate(-35 100 100)"></polygon>
+<text x="100" y="22" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#F5B544">N</text>
+<text x="100" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#9AA6B2">Under ¼ mi</text>
+</svg>
+<figcaption style="font-size: 13px; text-align: center"><strong>Getting close</strong><br><span style="color: #9AA6B2">Ping grows and pulses faster</span></figcaption>
+</figure>
+</div>
+
+<div>
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2; margin-bottom: 10px">Touch gestures</div>
+<div style="border-radius: 16px; background: #111720; border: 1px solid #1E2732; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1E2732">
+<div style="width: 92px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px">Double tap</div>
+<div style="flex: 1; font-size: 13px">Send "Thinking of you" to the friend you're pointed at</div>
+<button style="height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Edit</button>
+</div>
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1E2732">
+<div style="width: 92px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px">Triple tap</div>
+<div style="flex: 1; font-size: 13px">Ask them to call you</div>
+<button style="height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Edit</button>
+</div>
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1E2732">
+<div style="width: 92px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px">Swipe</div>
+<div style="flex: 1; font-size: 13px">Switch which friend the diamond points to</div>
+</div>
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px">
+<div style="width: 92px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; color: #F2C4C4">Back button</div>
+<div style="flex: 1; font-size: 13px">Hold 3 s for "I feel unsafe"</div>
+</div>
+</div>
+</div>
+
+<div style="flex: 1"></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 14px; background: #121821; border: 1px solid #1E2732">
+<div>
+<div style="font-size: 14px; font-weight: 600">[DEVICE NAME] · Bracelet</div>
+<div style="font-size: 12px; color: #9AA6B2">Connected · battery [--]%</div>
+</div>
+<a href="Main.dc.html" style="text-decoration: none; padding: 12px 14px; border-radius: 10px; border: 1px solid #263140; color: #E8EDF2; font-size: 13px">Back to compass</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":560,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

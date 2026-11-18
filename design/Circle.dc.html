@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Join the circle</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0F14}
+a{color:#9AA6B2}a:hover{color:#E8EDF2}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B0F14; color: #E8EDF2; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<div style="padding: 24px 24px 0 24px">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700">Join the circle</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 6px">Only people in your circle can see your general area or ping you.</div>
+</div>
+
+<div style="margin: 20px 16px 0 16px; padding: 18px; border-radius: 16px; background: #121821; border: 1px solid #1E2732; display: flex; flex-direction: column; gap: 12px">
+<label for="code" style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Enter an invite code</label>
+<div style="display: flex; gap: 8px">
+<input id="code" type="text" placeholder="e.g. 7KQ 4XM" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 1px solid #263140; background: #0B0F14; color: #E8EDF2; font: inherit; font-size: 16px; letter-spacing: 2px">
+<button style="height: 48px; padding: 0 18px; border-radius: 12px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600">Join</button>
+</div>
+<div style="display: flex; gap: 8px">
+<button style="flex: 1; height: 44px; border-radius: 12px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 14px">Share my code</button>
+<button style="flex: 1; height: 44px; border-radius: 12px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 14px">Tap devices to pair</button>
+</div>
+</div>
+
+<div style="padding: 22px 24px 8px 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Requests</div>
+<div style="margin: 0 16px; padding: 12px 14px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; display: flex; align-items: center; gap: 12px">
+<div style="width: 36px; height: 36px; border-radius: 50%; background: #1E2732; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #7FB2FF">J</div>
+<div style="flex: 1">
+<div style="font-size: 15px; font-weight: 600">Jordan</div>
+<div style="font-size: 12px; color: #9AA6B2">Wants to join your circle</div>
+</div>
+<button style="height: 44px; padding: 0 14px; border-radius: 10px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600; font-size: 13px">Accept</button>
+<button style="height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">Decline</button>
+</div>
+
+<div style="padding: 22px 24px 8px 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Blocks and raid protection</div>
+<div style="margin: 0 16px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; display: flex; flex-direction: column">
+<label style="display: flex; align-items: center; gap: 12px; padding: 14px; min-height: 44px; border-bottom: 1px solid #1E2732">
+<div style="flex: 1">
+<div style="font-size: 14px; font-weight: 600">Block ping raids</div>
+<div style="font-size: 12px; color: #9AA6B2">Mute anyone who sends 5+ pings in a minute</div>
+</div>
+<input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #F5B544">
+</label>
+<label style="display: flex; align-items: center; gap: 12px; padding: 14px; min-height: 44px; border-bottom: 1px solid #1E2732">
+<div style="flex: 1">
+<div style="font-size: 14px; font-weight: 600">Hide me while at home</div>
+<div style="font-size: 12px; color: #9AA6B2">Friends see "Home" instead of an area</div>
+</div>
+<input type="checkbox" style="width: 22px; height: 22px; accent-color: #F5B544">
+</label>
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px">
+<div style="flex: 1">
+<div style="font-size: 14px; font-weight: 600">Blocked people</div>
+<div style="font-size: 12px; color: #9AA6B2">2 blocked · they can't see or ping you</div>
+</div>
+<button style="height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">Manage</button>
+</div>
+</div>
+
+<div style="flex: 1"></div>
+<nav style="display: flex; justify-content: space-around; padding: 12px 8px 22px 8px; border-top: 1px solid #1E2732; font-size: 13px">
+<a href="Main.dc.html" style="text-decoration: none; padding: 10px 12px">Compass</a>
+<a href="Circle.dc.html" style="color: #F5B544; text-decoration: none; padding: 10px 12px">Circle</a>
+<a href="Safety.dc.html" style="text-decoration: none; padding: 10px 12px">Safety</a>
+<a href="Wearable.dc.html" style="text-decoration: none; padding: 10px 12px">Device</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

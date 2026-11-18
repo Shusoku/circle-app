@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Circle working draft</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0F14}
+a{color:#9AA6B2}a:hover{color:#E8EDF2}
+@keyframes pulse{0%{opacity:.6;transform:scale(.8)}100%{opacity:0;transform:scale(1.12)}}
+.ping{animation-name:pulse;animation-timing-function:ease-out;animation-iteration-count:infinite}
+.hold{cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:none;-webkit-touch-callout:none}
+button{cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B0F14; color: #E8EDF2; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 6px 24px">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.5px">Circle</div>
+<div style="font-size: 12px; color: #9AA6B2; border: 1px solid #263140; border-radius: 999px; padding: 6px 12px">{{shareChip}}</div>
+</div>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column">
+
+<sc-if value="{{isCompass}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column">
+<div style="position: relative; height: 300px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+<div class="ping" style="position: absolute; width: {{pingSize}}px; height: {{pingSize}}px; border: 2px solid #7FB2FF; border-radius: 50%; box-sizing: border-box; animation-duration: {{pulseDur}}s"></div>
+</sc-if>
+<div style="position: absolute; width: 260px; height: 260px; transform: rotate({{dialDeg}}deg)">
+<svg width="260" height="260" viewBox="0 0 300 300" role="img" aria-label="Compass dial">
+<circle cx="150" cy="150" r="146" fill="#121821" stroke="#263140" stroke-width="2"></circle>
+<circle cx="150" cy="150" r="112" fill="none" stroke="#1E2732" stroke-width="1"></circle>
+<g stroke="#E8EDF2" stroke-linecap="round">
+<line x1="150" y1="10" x2="150" y2="30" stroke-width="3" stroke="#F5B544"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(15 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(30 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="26" stroke-width="2" transform="rotate(45 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(60 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(75 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="30" stroke-width="3" transform="rotate(90 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(105 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(120 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="26" stroke-width="2" transform="rotate(135 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(150 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(165 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="30" stroke-width="3" transform="rotate(180 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(195 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(210 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="26" stroke-width="2" transform="rotate(225 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(240 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(255 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="30" stroke-width="3" transform="rotate(270 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(285 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(300 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="26" stroke-width="2" transform="rotate(315 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(330 150 150)"></line>
+<line x1="150" y1="10" x2="150" y2="22" stroke-width="1.5" transform="rotate(345 150 150)"></line>
+</g>
+<g font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700" text-anchor="middle" fill="#E8EDF2">
+<text x="150" y="58" fill="#F5B544">N</text>
+<text x="250" y="158">E</text>
+<text x="150" y="258">S</text>
+<text x="50" y="158">W</text>
+</g>
+</svg>
+</div>
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; width: 260px; height: 260px; transform: rotate({{arrowDeg}}deg)">
+<svg width="260" height="260" viewBox="0 0 300 300" aria-hidden="true">
+<polygon points="150,78 176,170 150,156 124,170" fill="#F5B544"></polygon>
+<circle cx="150" cy="150" r="7" fill="#0B0F14" stroke="#F5B544" stroke-width="3"></circle>
+</svg>
+</div>
+</sc-if>
+</div>
+
+<div style="text-align: center; padding: 0 24px">
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600">Pointing to {{sel.name}}</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 4px">{{sel.band}} · {{sel.area}}</div>
+</sc-if>
+<div style="font-size: 12px; color: #9AA6B2; margin-top: 6px">Heading {{headingLabel}} · {{compassMode}}</div>
+</div>
+
+<div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 12px 16px 0 16px">
+<button onClick="{{walkCloser}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Walk closer (sim)</button>
+<button onClick="{{resetDist}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Reset distances</button>
+<sc-if value="{{canAskCompass}}" hint-placeholder-val="{{true}}">
+<button onClick="{{useRealCompass}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #F5B544; background: transparent; color: #F5B544; font: inherit; font-size: 12px">Use phone compass</button>
+</sc-if>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding: 18px 24px 10px 24px">
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Friends in your circle</div>
+<div style="font-size: 12px; color: #9AA6B2">Tap to point · Hold for address</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px 16px">
+<sc-for list="{{friends}}" as="f" hint-placeholder-count="4">
+<div style="border-radius: 14px; background: {{f.bg}}; border: 1px solid {{f.border}}">
+<button class="hold" onClick="{{f.select}}" onPointerDown="{{f.press}}" onPointerUp="{{f.cancel}}" onPointerLeave="{{f.cancel}}" onPointerCancel="{{f.cancel}}" onContextMenu="{{f.noMenu}}" style="display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; min-height: 60px; box-sizing: border-box; padding: 12px 14px; border: none; background: transparent; color: #E8EDF2; font: inherit">
+<span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: #1E2732; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px; color: {{f.dot}}">{{f.initial}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 600">{{f.name}}</span>
+<span style="font-size: 12px; color: #9AA6B2">{{f.area}}</span>
+</span>
+<span style="text-align: right; display: flex; flex-direction: column">
+<span style="font-size: 13px; font-weight: 500">{{f.band}}</span>
+<span style="font-size: 11px; color: #9AA6B2">{{f.last}}</span>
+</span>
+</button>
+<sc-if value="{{f.isRevealed}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0 14px 12px 62px">
+<div style="width: 100%; font-size: 12px; color: #F5B544">{{f.address}}</div>
+<button onClick="{{f.message}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Message</button>
+<button onClick="{{f.call}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600; font-size: 12px">Call</button>
+<button onClick="{{f.block}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #7A2E2E; background: transparent; color: #F2C4C4; font: inherit; font-size: 12px">Block</button>
+<button onClick="{{f.hide}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: none; background: transparent; color: #9AA6B2; font: inherit; font-size: 12px">Hide address</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{noFriends}}" hint-placeholder-val="{{false}}">
+<div style="padding: 20px; border-radius: 14px; border: 1px dashed #263140; text-align: center; font-size: 13px; color: #9AA6B2">No one in your circle yet.
+<div style="margin-top: 10px"><button onClick="{{goCircle}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600">Join the circle</button></div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isCircle}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; padding-bottom: 16px">
+<div style="padding: 6px 24px 0 24px">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700">Join the circle</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 6px">Only people in your circle can see your general area or ping you.</div>
+</div>
+<div style="margin: 16px 16px 0 16px; padding: 16px; border-radius: 16px; background: #121821; border: 1px solid #1E2732; display: flex; flex-direction: column; gap: 12px">
+<label for="code" style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Enter an invite code</label>
+<div style="display: flex; gap: 8px">
+<input id="code" type="text" value="{{code}}" onChange="{{onCode}}" placeholder="e.g. 7KQ 4XM" autocomplete="off" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 1px solid #263140; background: #0B0F14; color: #E8EDF2; font: inherit; font-size: 16px; letter-spacing: 2px">
+<button onClick="{{join}}" style="height: 48px; padding: 0 18px; border-radius: 12px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600">Join</button>
+</div>
+<div style="display: flex; gap: 8px">
+<button onClick="{{shareCode}}" style="flex: 1; height: 44px; border-radius: 12px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 14px">Share my code</button>
+<button onClick="{{pairTap}}" style="flex: 1; height: 44px; border-radius: 12px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 14px">Tap devices to pair</button>
+</div>
+</div>
+
+<div style="padding: 20px 24px 8px 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Requests</div>
+<div style="display: flex; flex-direction: column; gap: 8px; margin: 0 16px">
+<sc-for list="{{requests}}" as="r" hint-placeholder-count="1">
+<div style="padding: 12px 14px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; display: flex; align-items: center; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #1E2732; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #7FB2FF">{{r.initial}}</span>
+<span style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 600">{{r.name}}</span>
+<span style="font-size: 12px; color: #9AA6B2">Wants to join your circle</span>
+</span>
+<button onClick="{{r.accept}}" style="height: 44px; padding: 0 12px; border-radius: 10px; border: none; background: #F5B544; color: #0B0F14; font: inherit; font-weight: 600; font-size: 13px">Accept</button>
+<button onClick="{{r.decline}}" style="height: 44px; padding: 0 10px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">Decline</button>
+</div>
+</sc-for>
+<sc-if value="{{noRequests}}" hint-placeholder-val="{{false}}">
+<div style="padding: 14px; border-radius: 14px; border: 1px dashed #263140; font-size: 13px; color: #9AA6B2; text-align: center">No pending requests</div>
+</sc-if>
+</div>
+
+<div style="padding: 20px 24px 8px 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Blocks and raid protection</div>
+<div style="margin: 0 16px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; display: flex; flex-direction: column">
+<label style="display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1px solid #1E2732; cursor: pointer">
+<span style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 14px; font-weight: 600">Block ping raids</span>
+<span style="font-size: 12px; color: #9AA6B2">Mute anyone who sends 5+ pings in a minute</span>
+</span>
+<input type="checkbox" checked="{{raidBlock}}" onChange="{{toggleRaid}}" style="width: 22px; height: 22px; accent-color: #F5B544">
+</label>
+<button onClick="{{simRaid}}" style="text-align: left; padding: 12px 14px; border: none; border-bottom: 1px solid #1E2732; background: transparent; color: #7FB2FF; font: inherit; font-size: 13px">Simulate a ping raid</button>
+<label style="display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1px solid #1E2732; cursor: pointer">
+<span style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 14px; font-weight: 600">Hide me while at home</span>
+<span style="font-size: 12px; color: #9AA6B2">Friends see "Home" instead of an area</span>
+</span>
+<input type="checkbox" checked="{{hideHome}}" onChange="{{toggleHome}}" style="width: 22px; height: 22px; accent-color: #F5B544">
+</label>
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px">
+<span style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 14px; font-weight: 600">Blocked people</span>
+<span style="font-size: 12px; color: #9AA6B2">{{blockedLabel}}</span>
+</span>
+<button onClick="{{toggleBlockedList}}" style="height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">{{manageLabel}}</button>
+</div>
+<sc-if value="{{showBlocked}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; border-top: 1px solid #1E2732">
+<sc-for list="{{blocked}}" as="b" hint-placeholder-count="1">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px">
+<span style="flex: 1; font-size: 14px">{{b.name}}</span>
+<button onClick="{{b.unblock}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Unblock</button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isSafety}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; padding-bottom: 16px">
+<div style="padding: 6px 24px 0 24px">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700">Safety</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 6px">Same as the button on the back of your device.</div>
+</div>
+
+<div style="margin: 16px 16px 0 16px; padding: 16px; border-radius: 18px; background: #2A1414; border: 1px solid #7A2E2E; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{unsafeReady}}" hint-placeholder-val="{{true}}">
+<button class="hold" onPointerDown="{{startHold}}" onPointerUp="{{endHold}}" onPointerLeave="{{endHold}}" onPointerCancel="{{endHold}}" onContextMenu="{{noMenu}}" style="position: relative; overflow: hidden; height: 64px; border-radius: 14px; border: none; background: #B8383C; color: #FFFFFF; font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700">
+<span style="position: absolute; left: 0; top: 0; bottom: 0; width: {{holdPct}}%; background: #E5484D"></span>
+<span style="position: relative">{{holdLabel}}</span>
+</button>
+<div style="font-size: 12px; color: #F2C4C4; line-height: 1.5">Hold for 3 seconds. Shares your exact location with your circle and emergency contacts. You get 10 seconds to cancel.</div>
+</sc-if>
+<sc-if value="{{unsafeActive}}" hint-placeholder-val="{{false}}">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: #FFFFFF">Sending alert in {{cancelLeft}}s</div>
+<div style="font-size: 12px; color: #F2C4C4">Your circle and emergency contacts will get your exact location and live vitals.</div>
+<button onClick="{{cancelAlert}}" style="height: 52px; border-radius: 14px; border: 1px solid #F2C4C4; background: transparent; color: #FFFFFF; font: inherit; font-weight: 600; font-size: 16px">Cancel, I'm OK</button>
+</sc-if>
+<sc-if value="{{unsafeSent}}" hint-placeholder-val="{{false}}">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: #FFFFFF">Alert sent</div>
+<div style="font-size: 12px; color: #F2C4C4">{{alertNote}}</div>
+<button onClick="{{resetAlert}}" style="height: 52px; border-radius: 14px; border: none; background: #FFFFFF; color: #2A1414; font: inherit; font-weight: 600; font-size: 16px">I'm safe now</button>
+</sc-if>
+</div>
+
+<div style="padding: 20px 24px 8px 24px; display: flex; justify-content: space-between; align-items: baseline">
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Vitals</div>
+<div style="font-size: 11px; color: #9AA6B2">Simulated device feed</div>
+</div>
+<div style="margin: 0 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="padding: 14px 12px; border-radius: 14px; background: #121821; border: 1px solid #1E2732">
+<div style="font-size: 11px; color: #9AA6B2">Heart rate</div>
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; margin-top: 4px">{{hr}}</div>
+<div style="font-size: 11px; color: #9AA6B2">bpm</div>
+</div>
+<div style="padding: 14px 12px; border-radius: 14px; background: #121821; border: 1px solid #1E2732">
+<div style="font-size: 11px; color: #9AA6B2">Blood oxygen</div>
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; margin-top: 4px">{{spo2}}</div>
+<div style="font-size: 11px; color: #9AA6B2">% SpO2</div>
+</div>
+<div style="padding: 14px 12px; border-radius: 14px; background: #121821; border: 1px solid #1E2732">
+<div style="font-size: 11px; color: #9AA6B2">Motion</div>
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; margin-top: 6px">{{motion}}</div>
+<div style="font-size: 11px; color: #9AA6B2">fall check</div>
+</div>
+</div>
+<div style="display: flex; gap: 8px; margin: 8px 16px 0 16px">
+<button onClick="{{simSpike}}" style="flex: 1; height: 40px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Simulate heart spike</button>
+<button onClick="{{simFall}}" style="flex: 1; height: 40px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 12px">Simulate a fall</button>
+</div>
+<label style="margin: 8px 16px 0 16px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; cursor: pointer">
+<span style="flex: 1; font-size: 13px">Alert contacts if vitals look abnormal</span>
+<input type="checkbox" checked="{{autoAlert}}" onChange="{{toggleAutoAlert}}" style="width: 22px; height: 22px; accent-color: #F5B544">
+</label>
+
+<div style="padding: 20px 24px 8px 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #9AA6B2">Emergency contacts</div>
+<div style="margin: 0 16px; border-radius: 14px; background: #111720; border: 1px solid #1E2732; display: flex; flex-direction: column">
+<sc-for list="{{contacts}}" as="c" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #1E2732">
+<span style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 14px; font-weight: 600">{{c.name}}</span>
+<span style="font-size: 12px; color: #9AA6B2">{{c.role}}</span>
+</span>
+<button onClick="{{c.call}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.color}}; font: inherit; font-weight: 600; font-size: 13px">{{c.label}}</button>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDevice}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; padding: 6px 16px 16px 16px; gap: 12px">
+<div style="align-self: stretch; padding: 0 8px">
+<div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700">Device</div>
+<div style="font-size: 13px; color: #9AA6B2; margin-top: 6px">A live preview of the wearable face. Tap it like the real thing.</div>
+</div>
+<button onClick="{{tapFace}}" aria-label="Device face. Double tap or triple tap to send a gesture." style="padding: 0; border: none; background: transparent; border-radius: 50%; touch-action: manipulation">
+<svg width="230" height="230" viewBox="0 0 200 200" aria-hidden="true">
+<circle cx="100" cy="100" r="96" fill="#05080B" stroke="#263140" stroke-width="3"></circle>
+<circle cx="100" cy="100" r="{{faceRing}}" fill="none" stroke="#7FB2FF" stroke-width="3" opacity="0.85"></circle>
+<polygon points="100,34 118,100 100,166 82,100" fill="none" stroke="#263140" stroke-width="1.5"></polygon>
+<g transform="rotate({{arrowDeg}} 100 100)">
+<polygon points="100,40 112,100 100,92 88,100" fill="#F5B544"></polygon>
+</g>
+<text x="100" y="22" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#F5B544">N</text>
+<text x="100" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#9AA6B2">{{faceLabel}}</text>
+</svg>
+</button>
+<div style="font-size: 14px; font-weight: 600">{{faceTitle}}</div>
+<div style="display: flex; gap: 8px">
+<button onClick="{{prevFriend}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">Swipe left</button>
+<button onClick="{{nextFriend}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #263140; background: transparent; color: #E8EDF2; font: inherit; font-size: 13px">Swipe right</button>
+</div>
+<div style="align-self: stretch; border-radius: 16px; background: #111720; border: 1px solid #1E2732; display: flex; flex-direction: column">
+<div style="display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #1E2732; font-size: 13px"><span style="width: 92px; font-weight: 600">Double tap</span><span style="flex: 1; color: #C9D1DA">Send "Thinking of you"</span></div>
+<div style="display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #1E2732; font-size: 13px"><span style="width: 92px; font-weight: 600">Triple tap</span><span style="flex: 1; color: #C9D1DA">Ask them to call you</span></div>
+<div style="display: flex; gap: 12px; padding: 12px 14px; font-size: 13px; align-items: center"><span style="width: 92px; font-weight: 600; color: #F2C4C4">Back button</span><span style="flex: 1; color: #C9D1DA">Hold 3 s for "I feel unsafe"</span>
+<button class="hold" onPointerDown="{{startHold}}" onPointerUp="{{endHold}}" onPointerLeave="{{endHold}}" onPointerCancel="{{endHold}}" onContextMenu="{{noMenu}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #7A2E2E; background: transparent; color: #F2C4C4; font: inherit; font-size: 12px">{{backLabel}}</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}">
+<div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 84px; padding: 12px 16px; border-radius: 12px; background: #E8EDF2; color: #0B0F14; font-size: 13px; font-weight: 500; text-align: center">{{toast}}</div>
+</sc-if>
+
+<nav style="display: flex; justify-content: space-around; padding: 8px 8px 18px 8px; border-top: 1px solid #1E2732">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button onClick="{{t.go}}" style="min-height: 44px; padding: 10px 12px; border: none; background: transparent; color: {{t.color}}; font: inherit; font-size: 13px; font-weight: {{t.weight}}">{{t.label}}</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tab: 'compass',
+      heading: 0,
+      live: false,
+      selected: 'maya',
+      revealed: null,
+      friends: this.seedFriends(),
+      requests: [{ id: 'jordan', name: 'Jordan', area: 'Near Ardenwood', dist: 1.6, bearing: -150, dot: '#FF9E7A' }],
+      code: '',
+      raidBlock: true,
+      hideHome: false,
+      showBlocked: false,
+      unsafe: 'idle',
+      holdPct: 0,
+      cancelLeft: 10,
+      hr: 74,
+      spo2: 98,
+      motion: 'Normal',
+      autoAlert: true,
+      taps: 0,
+      toast: ''
+    };
+    this._held = false;
+  }
+  seedFriends() {
+    return [
+      { id: 'maya', name: 'Maya', area: 'Near Lake Elizabeth', dist: 0.2, home: 0.2, bearing: -35, last: 'Live', dot: '#F5B544', blocked: false },
+      { id: 'leo', name: 'Leo', area: 'Around Fremont BART', dist: 0.9, home: 0.9, bearing: 60, last: '2 min ago', dot: '#7FB2FF', blocked: false },
+      { id: 'priya', name: 'Priya', area: 'Mission San Jose area', dist: 2.4, home: 2.4, bearing: 140, last: '5 min ago', dot: '#B9A4FF', blocked: false },
+      { id: 'andre', name: 'Andre', area: 'Newark, near the mall', dist: 5.8, home: 5.8, bearing: -110, last: '12 min ago', dot: '#6FD3B5', blocked: false }
+    ];
+  }
+  componentDidMount() {
+    this._start = Date.now();
+    this._swayIv = setInterval(() => {
+      if (this.state.live) return;
+      const t = (Date.now() - this._start) / 1000;
+      this.setState({ heading: 18 * Math.sin(t * 2 * Math.PI / 6) });
+    }, 80);
+    this._vitIv = setInterval(() => {
+      const s = this.state;
+      const target = s.unsafe === 'idle' ? 74 : 96;
+      let hr = s.hr + Math.round((Math.random() - 0.5) * 4) + Math.sign(target - s.hr);
+      hr = Math.max(55, Math.min(150, hr));
+      const spo2 = Math.max(95, Math.min(99, s.spo2 + Math.round((Math.random() - 0.5) * 2)));
+      this.setState({ hr, spo2 });
+    }, 1500);
+    this._onOri = (e) => {
+      let h = null;
+      if (typeof e.webkitCompassHeading === 'number') h = e.webkitCompassHeading;
+      else if (typeof e.alpha === 'number' && e.absolute) h = 360 - e.alpha;
+      if (h !== null) this.setState({ heading: h, live: true });
+    };
+  }
+  componentWillUnmount() {
+    clearInterval(this._swayIv); clearInterval(this._vitIv);
+    clearInterval(this._holdIv); clearInterval(this._cancelIv);
+    clearTimeout(this._t); clearTimeout(this._tt); clearTimeout(this._toastT);
+    window.removeEventListener('deviceorientationabsolute', this._onOri);
+    window.removeEventListener('deviceorientation', this._onOri);
+  }
+  say(msg) {
+    clearTimeout(this._toastT);
+    this.setState({ toast: msg });
+    this._toastT = setTimeout(() => this.setState({ toast: '' }), 2800);
+  }
+  band(d) {
+    if (d < 0.25) return 'Under ¼ mi';
+    if (d < 1) return 'Under 1 mi';
+    if (d < 3) return '1 to 3 mi';
+    return '3+ mi';
+  }
+  dirLabel(h) {
+    const n = ((h % 360) + 360) % 360;
+    const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    return dirs[Math.round(n / 45) % 8] + ' ' + Math.round(n) + '°';
+  }
+  visible() { return this.state.friends.filter((f) => !f.blocked); }
+  setFriend(id, patch) {
+    this.setState({ friends: this.state.friends.map((f) => (f.id === id ? { ...f, ...patch } : f)) });
+  }
+  addFriend(f) {
+    const friend = { last: 'Just joined', home: f.dist, blocked: false, ...f };
+    this.setState({ friends: [...this.state.friends, friend], selected: friend.id });
+  }
+  startHold() {
+    if (this.state.unsafe !== 'idle') return;
+    clearInterval(this._holdIv);
+    const start = Date.now();
+    this.setState({ unsafe: 'arming', holdPct: 0 });
+    this._holdIv = setInterval(() => {
+      const p = (Date.now() - start) / 3000;
+      if (p >= 1) {
+        clearInterval(this._holdIv);
+        this.setState({ unsafe: 'active', holdPct: 0, cancelLeft: 10, tab: 'safety' });
+        clearInterval(this._cancelIv);
+        this._cancelIv = setInterval(() => {
+          const left = this.state.cancelLeft - 1;
+          if (left <= 0) {
+            clearInterval(this._cancelIv);
+            this.setState({ unsafe: 'sent', cancelLeft: 0 });
+            this.say('Alert sent (simulated)');
+          } else {
+            this.setState({ cancelLeft: left });
+          }
+        }, 1000);
+      } else {
+        this.setState({ holdPct: Math.round(p * 100) });
+      }
+    }, 50);
+  }
+  endHold() {
+    if (this.state.unsafe !== 'arming') return;
+    clearInterval(this._holdIv);
+    this.setState({ unsafe: 'idle', holdPct: 0 });
+  }
+  renderVals() {
+    const s = this.state;
+    const vis = this.visible();
+    const sel = vis.find((f) => f.id === s.selected) || vis[0] || null;
+    const hasSel = !!sel;
+    const selView = sel ? { ...sel, band: this.band(sel.dist) } : { name: '', band: '', area: '' };
+
+    const friends = vis.map((f) => {
+      const on = sel && f.id === sel.id;
+      return {
+        ...f,
+        initial: f.name.charAt(0),
+        band: this.band(f.dist),
+        bg: on ? '#16202B' : '#111720',
+        border: on ? '#F5B544' : '#1E2732',
+        isRevealed: s.revealed === f.id,
+        address: 'Address shared: [STREET ADDRESS]',
+        select: () => {
+          if (this._held) { this._held = false; return; }
+          this.setState({ selected: f.id });
+        },
+        press: () => {
+          this._held = false;
+          clearTimeout(this._t);
+          this._t = setTimeout(() => {
+            this._held = true;
+            this.setState({ selected: f.id, revealed: f.id });
+          }, 550);
+        },
+        cancel: () => { clearTimeout(this._t); },
+        noMenu: (e) => { e.preventDefault(); },
+        message: () => this.say('Message to ' + f.name + ' (simulated)'),
+        call: () => this.say('Calling ' + f.name + '… (simulated)'),
+        hide: () => this.setState({ revealed: null }),
+        block: () => {
+          this.setState({
+            friends: s.friends.map((x) => (x.id === f.id ? { ...x, blocked: true } : x)),
+            revealed: null,
+            selected: s.selected === f.id ? null : s.selected
+          });
+          this.say(f.name + ' is blocked');
+        }
+      };
+    });
+
+    const heading = s.heading;
+    const arrowDeg = sel ? sel.bearing - heading : 0;
+    const pingSize = sel ? Math.round(300 - Math.min(sel.dist, 6) * 35) : 0;
+    const pulseDur = sel ? (0.7 + Math.min(sel.dist, 6) * 0.4).toFixed(2) : '2';
+    const faceRing = sel ? Math.round(86 - Math.min(sel.dist, 6) * 11) : 0;
+
+    const tabDefs = [['compass', 'Compass'], ['circle', 'Circle'], ['safety', 'Safety'], ['device', 'Device']];
+    const tabs = tabDefs.map(([id, label]) => ({
+      label,
+      color: s.tab === id ? '#F5B544' : '#9AA6B2',
+      weight: s.tab === id ? '600' : '400',
+      go: () => this.setState({ tab: id })
+    }));
+
+    const requests = s.requests.map((r) => ({
+      ...r,
+      initial: r.name.charAt(0),
+      accept: () => {
+        this.setState({ requests: this.state.requests.filter((x) => x.id !== r.id) });
+        this.addFriend({ id: r.id, name: r.name, area: r.area, dist: r.dist, bearing: r.bearing, dot: r.dot });
+        this.say(r.name + ' joined your circle');
+      },
+      decline: () => {
+        this.setState({ requests: this.state.requests.filter((x) => x.id !== r.id) });
+        this.say('Request declined');
+      }
+    }));
+
+    const blockedList = s.friends.filter((f) => f.blocked).map((f) => ({
+      name: f.name,
+      unblock: () => { this.setFriend(f.id, { blocked: false }); this.say(f.name + ' is unblocked'); }
+    }));
+
+    const contactDefs = [
+      { name: '[CONTACT NAME]', role: 'Parent · primary', kind: 'primary' },
+      { name: '[CONTACT NAME]', role: 'Roommate', kind: 'normal' },
+      { name: 'Emergency services', role: '911', kind: 'sos' }
+    ];
+    const contacts = contactDefs.map((c) => ({
+      ...c,
+      label: c.kind === 'sos' ? 'Call 911' : 'Call',
+      bg: c.kind === 'primary' ? '#F5B544' : 'transparent',
+      color: c.kind === 'primary' ? '#0B0F14' : (c.kind === 'sos' ? '#F2C4C4' : '#E8EDF2'),
+      border: c.kind === 'primary' ? '#F5B544' : (c.kind === 'sos' ? '#7A2E2E' : '#263140'),
+      call: () => this.say(c.kind === 'sos' ? 'Would dial 911 (disabled in this draft)' : 'Calling contact… (simulated)')
+    }));
+
+    const cycle = (dir) => {
+      if (!vis.length) return;
+      const i = Math.max(0, vis.findIndex((f) => sel && f.id === sel.id));
+      const next = vis[(i + dir + vis.length) % vis.length];
+      this.setState({ selected: next.id });
+    };
+
+    return {
+      shareChip: s.hideHome ? 'Hidden at home' : 'Sharing: area only',
+      isCompass: s.tab === 'compass',
+      isCircle: s.tab === 'circle',
+      isSafety: s.tab === 'safety',
+      isDevice: s.tab === 'device',
+      tabs,
+      hasSel,
+      sel: selView,
+      friends,
+      noFriends: vis.length === 0,
+      dialDeg: -heading,
+      arrowDeg,
+      pingSize,
+      pulseDur,
+      headingLabel: this.dirLabel(heading),
+      compassMode: s.live ? 'phone compass' : 'demo sway',
+      canAskCompass: !s.live,
+      useRealCompass: () => {
+        const D = window.DeviceOrientationEvent;
+        const listen = () => {
+          window.addEventListener('deviceorientationabsolute', this._onOri);
+          window.addEventListener('deviceorientation', this._onOri);
+          setTimeout(() => { if (!this.state.live) this.say('No compass found here. Open on a phone.'); }, 1500);
+        };
+        if (D && typeof D.requestPermission === 'function') {
+          D.requestPermission().then((r) => (r === 'granted' ? listen() : this.say('Compass permission denied'))).catch(() => this.say('Compass not available here'));
+        } else if (D) {
+          listen();
+        } else {
+          this.say('Compass not available here');
+        }
+      },
+      walkCloser: () => {
+        if (!sel) return;
+        const d = Math.max(0.05, +(sel.dist * 0.6).toFixed(2));
+        this.setFriend(sel.id, { dist: d, last: 'Live' });
+        if (d < 0.1) this.say('You found ' + sel.name + '!');
+      },
+      resetDist: () => {
+        this.setState({ friends: s.friends.map((f) => ({ ...f, dist: f.home })) });
+      },
+      goCircle: () => this.setState({ tab: 'circle' }),
+
+      code: s.code,
+      onCode: (e) => this.setState({ code: e.target.value.toUpperCase().slice(0, 8) }),
+      join: () => {
+        const c = s.code.replace(/\s/g, '');
+        if (c.length < 4) { this.say('Codes are at least 4 characters'); return; }
+        const id = 'f' + Date.now();
+        this.addFriend({ id, name: 'Friend ' + c.slice(0, 3), area: 'General area appears once live', dist: +(0.5 + Math.random() * 3.5).toFixed(1), bearing: Math.round(Math.random() * 360 - 180), dot: '#FFD27A' });
+        this.setState({ code: '' });
+        this.say('Joined with code ' + c);
+      },
+      shareCode: () => this.say('Your code 7KQ 4XM is ready to share (simulated)'),
+      pairTap: () => {
+        this.addFriend({ id: 'p' + Date.now(), name: 'Nearby device', area: 'Right next to you', dist: 0.05, bearing: 10, dot: '#9EE07A' });
+        this.say('Paired by tapping devices');
+      },
+      requests,
+      noRequests: s.requests.length === 0,
+      raidBlock: s.raidBlock,
+      toggleRaid: () => this.setState({ raidBlock: !s.raidBlock }),
+      simRaid: () => this.say(s.raidBlock ? 'Raid blocked: 12 pings from one account muted' : 'Incoming: 12 pings in 30 seconds. Turn on raid blocking?'),
+      hideHome: s.hideHome,
+      toggleHome: () => this.setState({ hideHome: !s.hideHome }),
+      blocked: blockedList,
+      blockedLabel: blockedList.length ? blockedList.length + ' blocked · they can’t see or ping you' : 'No one blocked',
+      showBlocked: s.showBlocked && blockedList.length > 0,
+      manageLabel: s.showBlocked ? 'Done' : 'Manage',
+      toggleBlockedList: () => {
+        if (!blockedList.length) { this.say('Hold a friend on the compass to block them'); return; }
+        this.setState({ showBlocked: !s.showBlocked });
+      },
+
+      unsafeReady: s.unsafe === 'idle' || s.unsafe === 'arming',
+      unsafeActive: s.unsafe === 'active',
+      unsafeSent: s.unsafe === 'sent',
+      holdPct: s.holdPct,
+      holdLabel: s.unsafe === 'arming' ? 'Keep holding…' : 'I feel unsafe',
+      backLabel: s.unsafe === 'arming' ? 'Holding…' : 'Hold',
+      cancelLeft: s.cancelLeft,
+      alertNote: 'Your circle (' + vis.length + ') and emergency contacts have your exact location and live vitals. Simulated in this draft.',
+      startHold: () => this.startHold(),
+      endHold: () => this.endHold(),
+      noMenu: (e) => { e.preventDefault(); },
+      cancelAlert: () => {
+        clearInterval(this._cancelIv);
+        this.setState({ unsafe: 'idle', cancelLeft: 10 });
+        this.say('Alert cancelled');
+      },
+      resetAlert: () => {
+        this.setState({ unsafe: 'idle', cancelLeft: 10, motion: 'Normal' });
+        this.say('Your circle was told you’re safe');
+      },
+      hr: s.hr,
+      spo2: s.spo2,
+      motion: s.motion,
+      autoAlert: s.autoAlert,
+      toggleAutoAlert: () => this.setState({ autoAlert: !s.autoAlert }),
+      simSpike: () => {
+        this.setState({ hr: 148 });
+        this.say(s.autoAlert ? 'High heart rate. Contacts notified (simulated)' : 'High heart rate detected');
+      },
+      simFall: () => {
+        this.setState({ motion: 'Fall!' });
+        this.say(s.autoAlert ? 'Fall detected. Contacts notified (simulated)' : 'Fall detected');
+        setTimeout(() => this.setState({ motion: 'Normal' }), 5000);
+      },
+      contacts,
+
+      faceRing,
+      faceLabel: sel ? this.band(sel.dist) : 'No one',
+      faceTitle: sel ? 'Pointing to ' + sel.name + (s.taps ? ' · taps: ' + s.taps : '') : 'Add friends to start',
+      tapFace: () => {
+        this._taps = (this._taps || 0) + 1;
+        this.setState({ taps: this._taps });
+        clearTimeout(this._tt);
+        this._tt = setTimeout(() => {
+          const n = this._taps; this._taps = 0;
+          this.setState({ taps: 0 });
+          const name = sel ? sel.name : 'your circle';
+          if (n === 2) this.say('Sent “Thinking of you” to ' + name);
+          else if (n >= 3) this.say('Asked ' + name + ' to call you');
+          else this.say('Single tap wakes the screen');
+        }, 450);
+      },
+      prevFriend: () => cycle(-1),
+      nextFriend: () => cycle(1),
+
+      hasToast: !!s.toast,
+      toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
