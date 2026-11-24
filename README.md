@@ -1,26 +1,61 @@
 # Circle
 
-Circle is a companion app for a wearable (necklace, bracelet or ring) that helps you find friends in your circle. A diamond compass on the device points the way to a friend, and the ping grows as you get closer.
+Circle helps you find friends in your circle. A wearable (necklace, bracelet or ring) with a diamond compass points the way to a friend, and the ping grows as you get closer. This repo has three parts that work together:
 
-This is a working draft. Open `index.html` in any browser to try it. No build step is needed.
+* **Phone app** (`index.html`, `live.js`): the Circle app.
+* **Backend** (`server/`): accounts, circles, live pointing, pings and safety alerts.
+* **Virtual pendant** (`pendant/`): the Compass 3D pendant, our virtual hardware display. It pairs with your Circle account and acts like the real device.
 
-## What the draft does
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for how we get from here to a real wearable.
 
-* **Compass:** A rotating compass with a triangle that points to the selected friend. Drag the dial to turn it.
-* **Flat digital compass:** Switch the compass to a flat heading strip. A gold diamond marks your friend and the app tells you which way to turn.
-* **Walk without your phone:** On the Device tab, pick a place and the wearable guides you there, so you can leave your phone behind.
-* **Friends list:** Shows each friend's general area and a distance band, never an exact pin. Tap a friend to point at them. Hold a friend to reveal their address and options to message, call or block.
-* **Ping:** The ring grows and pulses faster as you get closer. Use "Walk closer" to simulate it.
-* **Join the circle:** Join with an invite code, tap devices to pair, and accept or decline requests.
-* **Block raids:** Mutes anyone who spams pings. You can also block and unblock people.
-* **Safety:** Hold "I feel unsafe" for 3 seconds, then you have 10 seconds to cancel. Includes vital readers and emergency contacts.
-* **Device:** A preview of the flat screen wearable face. Double tap sends "Thinking of you," triple tap asks a friend to call you, and holding the back button triggers the unsafe alert.
+## Run it
+
+You need [Node.js](https://nodejs.org) 20 or newer.
+
+```bash
+npm run setup   # installs both parts and builds the pendant
+npm start       # starts Circle on http://localhost:8787
+```
+
+Then:
+
+1. Open **http://localhost:8787/** and pick a name. That's your phone app.
+2. On the Circle tab, tap **Share my code** to make a circle.
+3. Open the same address in a second browser (or a private window) as a friend, and enter the code under **Join the circle**.
+4. In the first phone app, open **Device** and tap **Pair a wearable**. Open **http://localhost:8787/pendant/** and enter the code. The pendant now points where your phone points.
+5. Double tap the pendant's center jewel to deploy the arrow and send "thinking of you". Triple tap to ask your friend to call. Your friend's app shows it.
+
+To test from your phone on the same WiFi, use your computer's local IP instead of `localhost`. Browsers only share real GPS over HTTPS or localhost, so over plain WiFi the app uses a simulated spot in Fremont. **Walk closer** moves your simulated spot toward your friend.
+
+Without the server, both apps still open on their own in demo mode: `index.html` straight from the folder, and the pendant with `cd pendant && npm run dev`.
+
+## What works
+
+* **Compass:** dial or flat digital mode, a triangle that points to your friend, and a ping that grows as you get closer.
+* **Friends list:** general area and a distance band, never an exact pin. Far away you only get a rough direction; it gets more precise as you get closer.
+* **Hold for address:** shows a friend's address only if they chose to share it.
+* **Join the circle:** six character invite codes.
+* **Block raids:** more than 5 pings in a minute from one person gets muted. Blocking hides you from each other both ways.
+* **Hide me at home:** friends see "Home" instead of a direction.
+* **Phone free walk:** pick a place and the pendant guides you there.
+* **Safety:** hold "I feel unsafe" for 3 seconds (or press TEST SOS on the pendant). You get 10 seconds to cancel, then your circle gets your exact location and vitals. High heart rate, high stress or a fall starts the same countdown automatically.
+* **Vitals:** come from the pendant and show up in the phone app.
+* **App background:** plain, night map or stars, on the Device tab.
 
 ## What's simulated
 
-Friend locations, vitals, calls and alerts are all fake in this draft, and 911 is never dialed. A real version needs accounts, live location sharing and a Bluetooth link to the wearable.
+Vitals (sliders on the pendant), phone calls and emergency contacts. Nothing is ever sent to 911.
+
+## Tests
+
+```bash
+npm test
+```
 
 ## Folders
 
-* `index.html`: the working app
-* `design/`: the original screen mockups (Design canvas source files)
+* `index.html`, `live.js`: the phone app
+* `server/`: the backend (Node, Express, WebSocket)
+* `pendant/`: the Compass virtual pendant (React, three.js), by our teammate, remixed from Google AI Studio
+* `design/`: the original screen mockups
+* `docs/`: roadmap
