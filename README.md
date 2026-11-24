@@ -7,6 +7,8 @@ This is a working draft. Open `index.html` in any browser to try it. No build st
 ## What the draft does
 
 * **Compass:** A rotating compass with a triangle that points to the selected friend. Drag the dial to turn it.
+* **Flat digital compass:** Switch the compass to a flat heading strip. A gold diamond marks your friend and the app tells you which way to turn.
+* **Walk without your phone:** On the Device tab, pick a place and the wearable guides you there, so you can leave your phone behind.
 * **Friends list:** Shows each friend's general area and a distance band, never an exact pin. Tap a friend to point at them. Hold a friend to reveal their address and options to message, call or block.
 * **Ping:** The ring grows and pulses faster as you get closer. Use "Walk closer" to simulate it.
 * **Join the circle:** Join with an invite code, tap devices to pair, and accept or decline requests.
