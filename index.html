@@ -143,10 +143,19 @@ nav.tabs { display: flex; justify-content: space-around; padding: 6px 8px calc(1
 nav.tabs button { min-height: 46px; padding: 8px 12px; border: none; background: transparent; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; }
 nav.tabs button[aria-current="page"] { color: var(--gold); font-weight: 600; }
 nav.tabs svg { width: 20px; height: 20px; }
+.seg { display: flex; gap: 6px; justify-content: center; padding: 8px 16px 0; }
+.seg button { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; font-size: 12px; color: var(--muted); }
+.seg button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); font-weight: 600; }
+.flat { flex-direction: column; gap: 14px; }
+.flat .big { position: relative; font-family: var(--f-mono); font-size: 44px; font-variant-numeric: tabular-nums; }
+.tape { position: relative; width: 100%; max-width: 340px; height: 70px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.flat .hint { position: relative; }
+.dests { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.dest { min-height: 52px; border-radius: 12px; border: 1px solid var(--line); background: transparent; text-align: left; padding: 8px 12px; font-size: 13px; font-weight: 600; }
+.dest[aria-pressed="true"] { border-color: var(--gold); background: var(--panel-2); }
+.dest small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) { .ping { animation: none; opacity: .5; } }
 </style>
-</head>
-<body>
 
 <div class="app">
   <header class="top">
@@ -185,7 +194,15 @@ nav.tabs svg { width: 20px; height: 20px; }
     unsafe: 'idle',
     cancelLeft: 10,
     hr: 74, spo2: 98, motion: 'Normal',
-    autoAlert: true
+    autoAlert: true,
+    mode: 'dial',
+    dest: null,
+    dests: [
+      { id: 'lake', name: 'Lake Elizabeth', dist: 0.6, home: 0.6, bearing: -20 },
+      { id: 'bart', name: 'Fremont BART', dist: 1.1, home: 1.1, bearing: 55 },
+      { id: 'sfbu', name: 'SFBU campus', dist: 2.0, home: 2.0, bearing: 120 },
+      { id: 'home', name: 'Home', dist: 1.4, home: 1.4, bearing: -140 }
+    ]
   };
 
   var base = 0, heading = 0, t0 = performance.now();
@@ -206,6 +223,7 @@ nav.tabs svg { width: 20px; height: 20px; }
     var v = visible();
     return v.find(function (f) { return f.id === S.selected; }) || v[0] || null;
   }
+  function target() { return S.dest ? S.dests.find(function (d) { return d.id === S.dest; }) : sel(); }
   function friendById(id) { return S.friends.find(function (f) { return f.id === id; }); }
   function addFriend(f) {
     f.last = f.last || 'Just joined'; f.home = f.dist; f.blocked = false;
@@ -233,15 +251,19 @@ nav.tabs svg { width: 20px; height: 20px; }
 
   /* ---------- views ---------- */
   function compassView() {
-    var s = sel(), v = visible();
-    var html = '<div class="compass" id="compass" aria-label="Compass. Drag to turn.">';
-    if (s) html += '<div class="ping" id="ping" style="width:' + pingSize(s.dist) + 'px;height:' + pingSize(s.dist) + 'px;animation-duration:' + (0.7 + Math.min(s.dist, 6) * 0.4).toFixed(2) + 's"></div>';
-    html += '<div class="layer" id="dial">' + dialSvg() + '</div>';
-    if (s) html += '<div class="layer" id="arrow"><svg width="260" height="260" viewBox="0 0 300 300" aria-hidden="true"><polygon points="150,76 177,170 150,155 123,170" fill="#F2B33D"/><circle cx="150" cy="150" r="7" fill="#0A1016" stroke="#F2B33D" stroke-width="3"/></svg></div>';
+    var s = sel(), v = visible(), t = target();
+    var html = '<div class="seg" role="group" aria-label="Compass style"><button data-act="mode" data-m="dial" aria-pressed="' + (S.mode === 'dial') + '">Dial compass</button><button data-act="mode" data-m="flat" aria-pressed="' + (S.mode === 'flat') + '">Flat digital</button></div>';
+    var ping = t ? '<div class="ping" id="ping" style="width:' + pingSize(t.dist) + 'px;height:' + pingSize(t.dist) + 'px;animation-duration:' + (0.7 + Math.min(t.dist, 6) * 0.4).toFixed(2) + 's"></div>' : '';
+    if (S.mode === 'flat') {
+      html += '<div class="compass flat" id="compass" aria-label="Flat digital compass. Drag sideways to turn.">' + ping + '<div class="big" id="flatHdg">' + dirLabel(heading) + '</div><svg class="tape" id="tape" viewBox="0 0 340 70" aria-hidden="true"></svg><div class="hint" id="flatTurn"></div>';
+    } else {
+    html += '<div class="compass" id="compass" aria-label="Compass. Drag to turn.">' + ping + '<div class="layer" id="dial">' + dialSvg() + '</div>';
+    }
+    if (t && S.mode !== 'flat') html += '<div class="layer" id="arrow"><svg width="260" height="260" viewBox="0 0 300 300" aria-hidden="true"><polygon points="150,76 177,170 150,155 123,170" fill="#F2B33D"/><circle cx="150" cy="150" r="7" fill="#0A1016" stroke="#F2B33D" stroke-width="3"/></svg></div>';
     html += '</div><div class="readout">';
-    if (s) html += '<div class="who">Pointing to ' + esc(s.name) + '</div><div class="where">' + band(s.dist) + ' · ' + esc(s.area) + '</div>';
-    html += '<div class="hdg" id="hdg">HDG ' + dirLabel(heading) + ' · drag the dial to turn</div></div>';
-    html += '<div class="pills"><button class="pill" data-act="walk">Walk closer (sim)</button><button class="pill" data-act="resetDist">Reset distances</button></div>';
+    if (t) html += '<div class="who">' + (S.dest ? 'Walking to ' : 'Pointing to ') + esc(t.name) + '</div><div class="where">' + band(t.dist) + ' · ' + esc(S.dest ? 'Phone free walk, guided by your device' : t.area) + '</div>';
+    html += '<div class="hdg" id="hdg">HDG ' + dirLabel(heading) + ' · drag to turn</div></div>';
+    html += '<div class="pills"><button class="pill" data-act="walk">Walk closer (sim)</button><button class="pill" data-act="resetDist">Reset distances</button>' + (S.dest ? '<button class="pill" data-act="endWalk">End phone free walk</button>' : '') + '</div>';
     html += '<div class="section-head"><div class="label">Friends in your circle</div><div class="hint">Tap to point · hold for address</div></div><div class="pad stack">';
     v.forEach(function (f) {
       var on = s && f.id === s.id;
@@ -314,8 +336,14 @@ nav.tabs svg { width: 20px; height: 20px; }
     return html;
   }
 
+  function walkCard() {
+    var h = '<div class="section-head"><div class="label">Walk without your phone</div><div class="hint">Saved to the wearable</div></div><div class="card" style="margin-top:0"><div class="sub" style="margin-top:0">Pick a place. Circle saves it to your wearable, so the compass guides you there even with your phone left at home.</div><div class="dests">';
+    S.dests.forEach(function (d) { h += '<button class="dest" data-act="pickDest" data-id="' + d.id + '" aria-pressed="' + (S.dest === d.id) + '">' + esc(d.name) + '<small>' + band(d.dist) + '</small></button>'; });
+    return h + '</div>' + (S.dest ? '<button class="btn" data-act="endWalk">End walk and point to friends</button>' : '') + '</div>';
+  }
+
   function deviceView() {
-    var s = sel();
+    var s = target();
     var ring = s ? Math.round(86 - Math.min(s.dist, 6) * 11) : 0;
     return '<div class="intro"><div class="h2">Device</div><div class="sub">A live preview of the wearable face. Tap it like the real thing.</div></div>' +
       '<div class="device"><button class="face-btn" data-act="tapFace" aria-label="Device face. Double tap or triple tap to send a gesture.">' +
@@ -325,11 +353,11 @@ nav.tabs svg { width: 20px; height: 20px; }
       (s ? '<g id="faceArrow"><polygon points="100,40 112,100 100,92 88,100" fill="#F2B33D"/></g>' : '') +
       '<text x="100" y="22" text-anchor="middle" font-family="Oxanium, sans-serif" font-size="13" font-weight="700" fill="#F2B33D">N</text>' +
       '<text x="100" y="186" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#93A1AE">' + (s ? band(s.dist) : 'No one') + '</text></svg></button>' +
-      '<div class="face-title" id="faceTitle">' + (s ? 'Pointing to ' + esc(s.name) : 'Add friends to start') + '</div>' +
+      '<div class="face-title" id="faceTitle">' + (s ? (S.dest ? 'Walking to ' : 'Pointing to ') + esc(s.name) : 'Add friends to start') + '</div>' +
       '<div class="pills" style="padding-top:0"><button class="pill" data-act="prev">Swipe left</button><button class="pill" data-act="next">Swipe right</button></div>' +
       '<div class="list gestures"><div class="gest"><b>Double tap</b><span>Send “Thinking of you”</span></div>' +
       '<div class="gest"><b>Triple tap</b><span>Ask them to call you</span></div>' +
-      '<div class="gest"><b style="color:var(--danger-fg)">Back button</b><span>Hold 3 s for “I feel unsafe”</span><button class="btn red" data-hold-sos id="backBtn">Hold</button></div></div></div>';
+      '<div class="gest"><b style="color:var(--danger-fg)">Back button</b><span>Hold 3 s for “I feel unsafe”</span><button class="btn red" data-hold-sos id="backBtn">Hold</button></div></div></div>' + walkCard();
   }
 
   function render() {
@@ -340,14 +368,14 @@ nav.tabs svg { width: 20px; height: 20px; }
     document.querySelectorAll('#tabs button').forEach(function (b) {
       if (b.dataset.tab === S.tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
-    document.getElementById('chip').textContent = S.hideHome ? 'Hidden at home' : 'Sharing: area only';
+    document.getElementById('chip').textContent = S.dest ? 'Phone free walk' : S.hideHome ? 'Hidden at home' : 'Sharing: area only';
     paint();
   }
   function goTab(t) { if (S.tab !== t) { S.tab = t; view.scrollTop = 0; render(); } }
 
   /* ---------- live compass ---------- */
   function paint() {
-    var s = sel();
+    var s = target();
     var dial = document.getElementById('dial');
     if (dial) dial.style.transform = 'rotate(' + (-heading) + 'deg)';
     var arrow = document.getElementById('arrow');
@@ -355,7 +383,26 @@ nav.tabs svg { width: 20px; height: 20px; }
     var fa = document.getElementById('faceArrow');
     if (fa && s) fa.setAttribute('transform', 'rotate(' + (s.bearing - heading) + ' 100 100)');
     var hdg = document.getElementById('hdg');
-    if (hdg) hdg.textContent = 'HDG ' + dirLabel(heading) + ' · drag the dial to turn';
+    if (hdg) hdg.textContent = 'HDG ' + dirLabel(heading) + ' · drag to turn';
+    var tape = document.getElementById('tape');
+    if (tape) {
+      var g = '', h = heading, names = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+      for (var a = Math.floor((h - 80) / 5) * 5; a <= h + 80; a += 5) {
+        var x = (170 + (a - h) * 2).toFixed(1), n = ((a % 360) + 360) % 360, major = n % 45 === 0;
+        g += '<line x1="' + x + '" y1="' + (major ? 22 : 30) + '" x2="' + x + '" y2="40" stroke="#93A1AE" stroke-width="' + (major ? 2 : 1) + '"/>';
+        if (major) g += '<text x="' + x + '" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="' + (n === 0 ? '#F2B33D' : '#E9EEF2') + '">' + names[n / 45] + '</text>';
+      }
+      g += '<line x1="170" y1="18" x2="170" y2="70" stroke="#F2B33D" stroke-width="2"/>';
+      var turn = document.getElementById('flatTurn');
+      if (s) {
+        var rel = ((s.bearing - h) % 360 + 540) % 360 - 180;
+        var cx = 170 + Math.max(-80, Math.min(80, rel)) * 2;
+        g += '<polygon points="' + cx + ',3 ' + (cx + 8) + ',11 ' + cx + ',19 ' + (cx - 8) + ',11" fill="#F2B33D"/>';
+        if (turn) turn.textContent = Math.abs(rel) < 10 ? s.name + ' is straight ahead' : 'Turn ' + (rel > 0 ? 'right ' : 'left ') + Math.round(Math.abs(rel)) + '° toward ' + s.name;
+      } else if (turn) turn.textContent = 'No one to point to yet';
+      tape.innerHTML = g;
+      var fh = document.getElementById('flatHdg'); if (fh) fh.textContent = dirLabel(h);
+    }
   }
   function tick(now) {
     if (!dragging) heading = base + (reduceMotion ? 0 : 18 * Math.sin((now - t0) / 1000 * 2 * Math.PI / 6));
@@ -370,13 +417,13 @@ nav.tabs svg { width: 20px; height: 20px; }
   }
   view.addEventListener('pointerdown', function (e) {
     if (e.target.closest('#compass')) {
-      dragging = { start: angleAt(e), h: heading };
+      dragging = { start: angleAt(e), h: heading, x: e.clientX };
       e.target.closest('#compass').setPointerCapture(e.pointerId);
     }
   });
   view.addEventListener('pointermove', function (e) {
     if (!dragging) return;
-    heading = dragging.h - (angleAt(e) - dragging.start);
+    heading = S.mode === 'flat' ? dragging.h - (e.clientX - dragging.x) * 0.6 : dragging.h - (angleAt(e) - dragging.start);
   });
   function endDrag() {
     if (!dragging) return;
@@ -499,12 +546,16 @@ nav.tabs svg { width: 20px; height: 20px; }
     var act = a.dataset.act, id2 = a.dataset.id, f = id2 && friendById(id2), s = sel();
     switch (act) {
       case 'walk':
-        if (!s) return;
-        s.dist = Math.max(0.05, +(s.dist * 0.6).toFixed(2)); s.last = 'Live';
+        var tw = target();
+        if (!tw) return;
+        tw.dist = Math.max(0.05, +(tw.dist * 0.6).toFixed(2)); if (!S.dest) tw.last = 'Live';
         render();
-        if (s.dist < 0.1) say('You found ' + s.name + '!');
+        if (tw.dist < 0.1) say(S.dest ? 'You made it to ' + tw.name + '!' : 'You found ' + tw.name + '!');
         break;
-      case 'resetDist': S.friends.forEach(function (x) { x.dist = x.home; }); render(); break;
+      case 'resetDist': S.friends.concat(S.dests).forEach(function (x) { x.dist = x.home; }); render(); break;
+      case 'mode': S.mode = a.dataset.m; render(); break;
+      case 'pickDest': S.dest = id2; render(); say('Route saved to your device. You can leave your phone behind.'); break;
+      case 'endWalk': S.dest = null; render(); say('Back to pointing at your friends'); break;
       case 'msg': say('Message to ' + f.name + ' (simulated)'); break;
       case 'call': say('Calling ' + f.name + '… (simulated)'); break;
       case 'hideAddr': S.revealed = null; render(); break;
