@@ -1,0 +1,16 @@
+{
+  "name": "circle-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Backend for Circle: circles, live pointing, pings, raid blocking and safety alerts shared by the phone app and the pendant.",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}

@@ -154,10 +154,22 @@ nav.tabs svg { width: 20px; height: 20px; }
 .dest { min-height: 52px; border-radius: 12px; border: 1px solid var(--line); background: transparent; text-align: left; padding: 8px 12px; font-size: 13px; font-weight: 600; }
 .dest[aria-pressed="true"] { border-color: var(--gold); background: var(--panel-2); }
 .dest small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; margin-top: 2px; }
+.bgfx { position: absolute; inset: -45%; z-index: 0; pointer-events: none; opacity: .7; transition: opacity .4s; }
+.bgfx.plain { opacity: 0; }
+.bgfx.map { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'><g fill='none' stroke='%2322303D' stroke-linecap='round'><path d='M0 60H360M0 150H360M0 250H360M0 320H360' stroke-width='2'/><path d='M40 0V360M130 0V360M230 0V360M310 0V360' stroke-width='2'/><path d='M0 200C90 170 170 120 360 40' stroke-width='5' stroke='%232A3B4B'/><path d='M85 0V360M180 0V360M0 105H360M0 290H360' stroke-width='1' stroke='%231A2631'/></g><path d='M250 260c25-18 70-12 80 12s-20 50-52 46-50-40-28-58z' fill='%2316304A'/><circle cx='60' cy='300' r='14' fill='%2314281C'/></svg>"); background-size: 360px 360px; }
+.bgfx.stars { background-image: radial-gradient(1.2px 1.2px at 20px 30px, #E9EEF2, transparent), radial-gradient(1px 1px at 90px 140px, #93A1AE, transparent), radial-gradient(1.5px 1.5px at 160px 60px, #F2B33D, transparent), radial-gradient(1px 1px at 200px 190px, #E9EEF2, transparent), radial-gradient(1px 1px at 50px 210px, #7DB4FF, transparent), radial-gradient(1.2px 1.2px at 130px 100px, #93A1AE, transparent); background-size: 220px 220px; opacity: .9; }
+header.top, main, nav.tabs { position: relative; z-index: 1; }
+.friend-alert { margin: 16px 16px 0; padding: 14px 16px; border-radius: 14px; background: var(--danger-bg); border: 1px solid var(--danger); font-size: 13px; line-height: 1.5; }
+.friend-alert b { color: #fff; font-size: 15px; }
+.live-badge { color: var(--ping); }
+.overlay { position: absolute; inset: 0; z-index: 6; background: rgba(10,16,22,.94); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.overlay form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+.overlay input { height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font-size: 16px; }
 @media (prefers-reduced-motion: reduce) { .ping { animation: none; opacity: .5; } }
 </style>
 
 <div class="app">
+  <div class="bgfx plain" id="bgfx" aria-hidden="true"></div>
   <header class="top">
     <div class="brand">CIRCL<span>E</span></div>
     <div class="chip" id="chip">Sharing: area only</div>
@@ -196,6 +208,11 @@ nav.tabs svg { width: 20px; height: 20px; }
     hr: 74, spo2: 98, motion: 'Normal',
     autoAlert: true,
     mode: 'dial',
+    bg: 'plain',
+    live: false,
+    myCode: '',
+    friendAlerts: [],
+    v2k: 'Blood oxygen', v2u: '% SpO2',
     dest: null,
     dests: [
       { id: 'lake', name: 'Lake Elizabeth', dist: 0.6, home: 0.6, bearing: -20 },
@@ -216,6 +233,12 @@ nav.tabs svg { width: 20px; height: 20px; }
     clearTimeout(toastT);
     toastEl.textContent = msg; toastEl.hidden = false;
     toastT = setTimeout(function () { toastEl.hidden = true; }, 2800);
+  }
+  function bandOf(x) { return x.band || band(x.dist); }
+  function hook(name, data) {
+    var h = window.CircleLive && window.CircleLive[name];
+    if (!h) return false;
+    try { return h(data) === true; } catch (err) { console.error(err); return false; }
   }
   function band(d) { return d < 0.25 ? 'Under ¼ mi' : d < 1 ? 'Under 1 mi' : d < 3 ? '1 to 3 mi' : '3+ mi'; }
   function visible() { return S.friends.filter(function (f) { return !f.blocked; }); }
@@ -261,7 +284,7 @@ nav.tabs svg { width: 20px; height: 20px; }
     }
     if (t && S.mode !== 'flat') html += '<div class="layer" id="arrow"><svg width="260" height="260" viewBox="0 0 300 300" aria-hidden="true"><polygon points="150,76 177,170 150,155 123,170" fill="#F2B33D"/><circle cx="150" cy="150" r="7" fill="#0A1016" stroke="#F2B33D" stroke-width="3"/></svg></div>';
     html += '</div><div class="readout">';
-    if (t) html += '<div class="who">' + (S.dest ? 'Walking to ' : 'Pointing to ') + esc(t.name) + '</div><div class="where">' + band(t.dist) + ' · ' + esc(S.dest ? 'Phone free walk, guided by your device' : t.area) + '</div>';
+    if (t) html += '<div class="who">' + (S.dest ? 'Walking to ' : 'Pointing to ') + esc(t.name) + '</div><div class="where">' + bandOf(t) + ' · ' + esc(S.dest ? 'Phone free walk, guided by your device' : t.area) + '</div>';
     html += '<div class="hdg" id="hdg">HDG ' + dirLabel(heading) + ' · drag to turn</div></div>';
     html += '<div class="pills"><button class="pill" data-act="walk">Walk closer (sim)</button><button class="pill" data-act="resetDist">Reset distances</button>' + (S.dest ? '<button class="pill" data-act="endWalk">End phone free walk</button>' : '') + '</div>';
     html += '<div class="section-head"><div class="label">Friends in your circle</div><div class="hint">Tap to point · hold for address</div></div><div class="pad stack">';
@@ -271,9 +294,9 @@ nav.tabs svg { width: 20px; height: 20px; }
         '<button class="friend-main" data-friend="' + f.id + '" aria-expanded="' + (S.revealed === f.id) + '">' +
         '<span class="avatar" style="color:' + f.dot + '">' + esc(f.name.charAt(0)) + '</span>' +
         '<span class="grow"><span class="fname">' + esc(f.name) + '</span><span class="farea">' + esc(f.area) + '</span></span>' +
-        '<span class="fmeta"><span class="fband" style="display:block">' + band(f.dist) + '</span><span class="flast">' + esc(f.last) + '</span></span></button>';
+        '<span class="fmeta"><span class="fband" style="display:block">' + bandOf(f) + '</span><span class="flast">' + esc(f.last) + '</span></span></button>';
       if (S.revealed === f.id) {
-        html += '<div class="details"><div class="addr">Address shared: [STREET ADDRESS]</div>' +
+        html += '<div class="details"><div class="addr">' + (f.address ? 'Address: ' + esc(f.address) : f.addressNote ? esc(f.addressNote) : S.live ? 'Checking for a shared address…' : 'Address shared: [STREET ADDRESS]') + '</div>' +
           '<button class="btn" data-act="msg" data-id="' + f.id + '">Message</button>' +
           '<button class="btn gold" data-act="call" data-id="' + f.id + '">Call</button>' +
           '<button class="btn red" data-act="block" data-id="' + f.id + '">Block</button>' +
@@ -291,7 +314,7 @@ nav.tabs svg { width: 20px; height: 20px; }
     html += '<form class="card" id="joinForm"><label class="label" for="code">Enter an invite code</label>' +
       '<div class="row"><input id="code" class="code-input" type="text" autocomplete="off" maxlength="8" placeholder="7KQ4XM" value="' + esc(S.code) + '" style="flex:2">' +
       '<button class="btn gold" type="submit" style="min-height:48px">Join</button></div>' +
-      '<div class="row"><button type="button" class="btn" data-act="share">Share my code</button><button type="button" class="btn" data-act="pair">Tap devices to pair</button></div></form>';
+      '<div class="row"><button type="button" class="btn" data-act="share">' + (S.myCode ? 'Your code: ' + esc(S.myCode) : 'Share my code') + '</button><button type="button" class="btn" data-act="pair">Tap devices to pair</button></div></form>';
     html += '<div class="section-head"><div class="label">Requests</div></div><div class="pad stack">';
     S.requests.forEach(function (r) {
       html += '<div class="friend"><div class="item"><span class="avatar" style="color:' + r.dot + '">' + esc(r.name.charAt(0)) + '</span>' +
@@ -312,7 +335,11 @@ nav.tabs svg { width: 20px; height: 20px; }
   }
 
   function safetyView() {
-    var html = '<div class="intro"><div class="h2">Safety</div><div class="sub">Works the same as the button on the back of your device.</div></div><div class="alert">';
+    var html = '<div class="intro"><div class="h2">Safety</div><div class="sub">Works the same as the button on the back of your device.</div></div>';
+    S.friendAlerts.forEach(function (a) {
+      html += '<div class="friend-alert" role="alert"><b>' + esc(a.name) + ' needs help</b><br>' + esc(a.where) + (a.hr ? ' · heart rate ' + esc(a.hr) : '') + '</div>';
+    });
+    html += '<div class="alert">';
     if (S.unsafe === 'idle' || S.unsafe === 'arming') {
       html += '<button class="sos" id="sos" data-hold-sos><span class="fill" id="sosFill"></span><span class="txt" id="sosTxt">I feel unsafe</span></button>' +
         '<div class="note">Hold for 3 seconds. Your exact location and live vitals go to your circle and emergency contacts. You get 10 seconds to cancel.</div>';
@@ -320,12 +347,12 @@ nav.tabs svg { width: 20px; height: 20px; }
       html += '<div class="big" id="countdown">Sending alert in ' + S.cancelLeft + 's</div><div class="note">Your circle and emergency contacts will get your exact location and live vitals.</div>' +
         '<button class="btn outline-red" data-act="cancelAlert">Cancel, I’m OK</button>';
     } else {
-      html += '<div class="big">Alert sent</div><div class="note">Your circle (' + visible().length + ') and emergency contacts have your exact location and live vitals. Simulated in this draft.</div>' +
+      html += '<div class="big">Alert sent</div><div class="note">Your circle (' + visible().length + ') and emergency contacts have your exact location and live vitals. ' + (S.live ? 'Sent through Circle.' : 'Simulated in this draft.') + '</div>' +
         '<button class="btn white" data-act="safeNow">I’m safe now</button>';
     }
-    html += '</div><div class="section-head"><div class="label">Vitals</div><div class="hint">Simulated device feed</div></div>' +
+    html += '</div><div class="section-head"><div class="label">Vitals</div><div class="hint">' + (S.live ? '<span class="live-badge">Live from your wearable</span>' : 'Simulated device feed') + '</div></div>' +
       '<div class="vitals"><div class="vital"><div class="k">Heart rate</div><div class="v' + (S.hr > 120 ? ' warn' : '') + '" id="hr">' + S.hr + '</div><div class="u">bpm</div></div>' +
-      '<div class="vital"><div class="k">Blood oxygen</div><div class="v" id="spo2">' + S.spo2 + '</div><div class="u">% SpO2</div></div>' +
+      '<div class="vital"><div class="k">' + S.v2k + '</div><div class="v" id="spo2">' + S.spo2 + '</div><div class="u">' + S.v2u + '</div></div>' +
       '<div class="vital"><div class="k">Motion</div><div class="v' + (S.motion !== 'Normal' ? ' warn' : '') + '" id="motion" style="font-size:18px;margin-top:8px">' + S.motion + '</div><div class="u">fall check</div></div></div>' +
       '<div class="pills"><button class="pill" data-act="spike">Simulate heart spike</button><button class="pill" data-act="fall">Simulate a fall</button></div>' +
       '<div class="list" style="margin-top:10px"><label class="item" for="auto"><span class="grow"><span class="t" style="font-weight:500">Alert contacts if vitals look abnormal</span></span><input id="auto" class="check" type="checkbox"' + (S.autoAlert ? ' checked' : '') + '></label></div>' +
@@ -339,7 +366,11 @@ nav.tabs svg { width: 20px; height: 20px; }
   function walkCard() {
     var h = '<div class="section-head"><div class="label">Walk without your phone</div><div class="hint">Saved to the wearable</div></div><div class="card" style="margin-top:0"><div class="sub" style="margin-top:0">Pick a place. Circle saves it to your wearable, so the compass guides you there even with your phone left at home.</div><div class="dests">';
     S.dests.forEach(function (d) { h += '<button class="dest" data-act="pickDest" data-id="' + d.id + '" aria-pressed="' + (S.dest === d.id) + '">' + esc(d.name) + '<small>' + band(d.dist) + '</small></button>'; });
-    return h + '</div>' + (S.dest ? '<button class="btn" data-act="endWalk">End walk and point to friends</button>' : '') + '</div>';
+    h += '</div>' + (S.dest ? '<button class="btn" data-act="endWalk">End walk and point to friends</button>' : '') + '</div>';
+    h += '<div class="section-head"><div class="label">Your wearable</div></div><div class="card" style="margin-top:0"><div class="sub" style="margin-top:0">Pair the Compass pendant so it points where this app points and its taps reach your friends.</div><button class="btn gold" data-act="pairWearable">Pair a wearable</button>' + (S.pairInfo ? '<div class="sub" style="margin-top:0">' + S.pairInfo + '</div>' : '') + '</div>';
+    h += '<div class="section-head"><div class="label">App background</div></div><div class="seg" role="group" aria-label="App background" style="justify-content:flex-start;padding-top:0;padding-bottom:20px">';
+    [['plain', 'Plain'], ['map', 'Night map'], ['stars', 'Stars']].forEach(function (b) { h += '<button data-act="bg" data-b="' + b[0] + '" aria-pressed="' + (S.bg === b[0]) + '">' + b[1] + '</button>'; });
+    return h + '</div>';
   }
 
   function deviceView() {
@@ -352,7 +383,7 @@ nav.tabs svg { width: 20px; height: 20px; }
       '<polygon points="100,34 118,100 100,166 82,100" fill="none" stroke="#22303D" stroke-width="1.5"/>' +
       (s ? '<g id="faceArrow"><polygon points="100,40 112,100 100,92 88,100" fill="#F2B33D"/></g>' : '') +
       '<text x="100" y="22" text-anchor="middle" font-family="Oxanium, sans-serif" font-size="13" font-weight="700" fill="#F2B33D">N</text>' +
-      '<text x="100" y="186" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#93A1AE">' + (s ? band(s.dist) : 'No one') + '</text></svg></button>' +
+      '<text x="100" y="186" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#93A1AE">' + (s ? bandOf(s) : 'No one') + '</text></svg></button>' +
       '<div class="face-title" id="faceTitle">' + (s ? (S.dest ? 'Walking to ' : 'Pointing to ') + esc(s.name) : 'Add friends to start') + '</div>' +
       '<div class="pills" style="padding-top:0"><button class="pill" data-act="prev">Swipe left</button><button class="pill" data-act="next">Swipe right</button></div>' +
       '<div class="list gestures"><div class="gest"><b>Double tap</b><span>Send “Thinking of you”</span></div>' +
@@ -382,6 +413,8 @@ nav.tabs svg { width: 20px; height: 20px; }
     if (arrow && s) arrow.style.transform = 'rotate(' + (s.bearing - heading) + 'deg)';
     var fa = document.getElementById('faceArrow');
     if (fa && s) fa.setAttribute('transform', 'rotate(' + (s.bearing - heading) + ' 100 100)');
+    var bgfx = document.getElementById('bgfx');
+    if (bgfx) { bgfx.className = 'bgfx ' + S.bg; bgfx.style.transform = S.bg === 'plain' ? '' : 'rotate(' + (-heading) + 'deg)'; }
     var hdg = document.getElementById('hdg');
     if (hdg) hdg.textContent = 'HDG ' + dirLabel(heading) + ' · drag to turn';
     var tape = document.getElementById('tape');
@@ -441,7 +474,7 @@ nav.tabs svg { width: 20px; height: 20px; }
     if (!b) return;
     held = false; clearTimeout(holdT);
     holdT = setTimeout(function () {
-      held = true; S.selected = b.dataset.friend; S.revealed = b.dataset.friend; render();
+      held = true; S.selected = b.dataset.friend; S.revealed = b.dataset.friend; hook('select', S.selected); hook('reveal', S.revealed); render();
     }, 550);
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) {
@@ -469,6 +502,7 @@ nav.tabs svg { width: 20px; height: 20px; }
       if (fill) fill.style.width = Math.min(100, p * 100) + '%';
       if (p >= 1) {
         clearInterval(sosIv);
+        if (S.live && hook('act', { act: 'sos' })) { S.tab = 'safety'; return; }
         S.unsafe = 'active'; S.cancelLeft = 10; S.tab = 'safety';
         render();
         clearInterval(cancelIv);
@@ -499,6 +533,7 @@ nav.tabs svg { width: 20px; height: 20px; }
 
   /* ---------- vitals ---------- */
   setInterval(function () {
+    if (S.live) return;
     var target = S.unsafe === 'idle' ? 74 : 98;
     S.hr = Math.max(55, Math.min(150, S.hr + Math.round((Math.random() - 0.5) * 4) + Math.sign(target - S.hr)));
     S.spo2 = Math.max(95, Math.min(99, S.spo2 + Math.round((Math.random() - 0.5) * 2)));
@@ -519,6 +554,7 @@ nav.tabs svg { width: 20px; height: 20px; }
       var n = taps; taps = 0;
       var name = s ? s.name : 'your circle';
       if (ft && s) ft.textContent = 'Pointing to ' + s.name;
+      if (n >= 2) hook('gesture', n >= 3 ? 'triple' : 'double');
       if (n === 2) say('Sent “Thinking of you” to ' + name);
       else if (n >= 3) say('Asked ' + name + ' to call you');
       else say('Single tap wakes the screen');
@@ -536,7 +572,8 @@ nav.tabs svg { width: 20px; height: 20px; }
     if (fb) {
       if (held) { held = false; return; }
       var id = fb.dataset.friend;
-      if (S.selected === id) S.revealed = S.revealed === id ? null : id; else S.selected = id;
+      if (S.selected === id) S.revealed = S.revealed === id ? null : id; else { S.selected = id; S.dest = null; hook('select', id); }
+      if (S.revealed) hook('reveal', S.revealed);
       render(); return;
     }
     var go = e.target.closest('[data-tab-go]');
@@ -544,6 +581,8 @@ nav.tabs svg { width: 20px; height: 20px; }
     var a = e.target.closest('[data-act]');
     if (!a) return;
     var act = a.dataset.act, id2 = a.dataset.id, f = id2 && friendById(id2), s = sel();
+    if (act === 'bg') { S.bg = a.dataset.b; try { localStorage.setItem('circle.bg', S.bg); } catch (err) {} render(); return; }
+    if (hook('act', { act: act, id: id2, el: a })) return;
     switch (act) {
       case 'walk':
         var tw = target();
@@ -594,6 +633,7 @@ nav.tabs svg { width: 20px; height: 20px; }
       case 'callContact': say('Calling contact… (simulated)'); break;
       case 'call911': say('This draft never dials 911. In the real app this calls emergency services.'); break;
       case 'tapFace': tapFace(); break;
+      case 'pairWearable': say('Open the pendant and enter code 7KQ4XM (simulated)'); break;
       case 'prev': cycle(-1); break;
       case 'next': cycle(1); break;
     }
@@ -603,6 +643,8 @@ nav.tabs svg { width: 20px; height: 20px; }
     if (e.target.id === 'raid') S.raidBlock = e.target.checked;
     if (e.target.id === 'home') { S.hideHome = e.target.checked; document.getElementById('chip').textContent = S.hideHome ? 'Hidden at home' : 'Sharing: area only'; }
     if (e.target.id === 'auto') S.autoAlert = e.target.checked;
+    var patch = {}; patch[{ raid: 'raidBlock', home: 'hideHome', auto: 'autoAlert' }[e.target.id]] = e.target.checked;
+    if (e.target.id in { raid: 1, home: 1, auto: 1 }) hook('settings', patch);
   });
   view.addEventListener('input', function (e) {
     if (e.target.id === 'code') { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, ''); S.code = e.target.value; }
@@ -611,6 +653,7 @@ nav.tabs svg { width: 20px; height: 20px; }
     e.preventDefault();
     var c = S.code.replace(/\s/g, '');
     if (c.length < 4) { say('Invite codes are at least 4 characters'); return; }
+    if (hook('join', c)) { S.code = ''; render(); return; }
     addFriend({ id: 'c' + Date.now(), name: 'Friend ' + c.slice(0, 3), area: 'General area appears once they’re live', dist: +(0.5 + Math.random() * 3.5).toFixed(1), bearing: Math.round(Math.random() * 360 - 180), dot: '#FFD27A' });
     S.code = ''; render(); say('Joined with code ' + c);
   });
@@ -619,8 +662,11 @@ nav.tabs svg { width: 20px; height: 20px; }
     var b = e.target.closest('[data-tab]'); if (b) goTab(b.dataset.tab);
   });
 
+  try { S.bg = localStorage.getItem('circle.bg') || S.bg; } catch (err) {}
+  window.CircleApp = { S: S, render: render, say: say, sel: sel, target: target, goTab: goTab };
   render();
 })();
 </script>
+<script src="live.js"></script>
 </body>
 </html>
